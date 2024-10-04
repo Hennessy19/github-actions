@@ -27,10 +27,15 @@ jobs:
           docker push "${{ secrets.DOCKER_USERNAME }}"/flask-app:latest
 
       # Vulnerability Scanning with Trivy
+      # Vulnerability Scanning with Trivy
       - name: Docker Image Security Scan with Trivy
         run: |
-          docker pull aquasec/trivy:latest
-          docker run --rm -v $(pwd):/root/.cache/ aquasec/trivy:latest "${{ secrets.DOCKER_USERNAME }}"/flask-app:latest
+            docker pull aquasec/trivy:latest
+            docker run --rm \
+                -v /var/run/docker.sock:/var/run/docker.sock \  # Ensure Docker socket is mounted for scanning
+                aquasec/trivy:latest \
+                image "${{ secrets.DOCKER_USERNAME }}/flask-app:latest"
+
 
   # Deploy to Kubernetes
   deploy:
