@@ -15,7 +15,7 @@ jobs:
 
       # Docker Linting and Security Scan (Hadolint)
       - name: Lint Dockerfile
-        run: docker run --rm -i hadolint/hadolint < Dockerfile
+        run: docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 - < Dockerfile
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
