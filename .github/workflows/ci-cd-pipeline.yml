@@ -68,11 +68,12 @@ jobs:
 
 
     # Check for Policy Violations using OPA
-    # - name: Kubernetes Policy Checks with OPA
-    #   run: |
-    #     curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
-    #     chmod +x opa
-    #     ./opa eval --format pretty 'data.kubernetes.admission.deny = {"msg": msg}'
+    - name: Kubernetes Policy Checks with OPA
+      run: |
+        curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
+        chmod +x opa
+        ./opa eval --format pretty 'data.kubernetes.admission.deny = {"msg": msg}'
+        
      # Set up Kind Kubernetes Cluster
     - name: Deploy to Kind Kubernetes Cluster
       run: |
