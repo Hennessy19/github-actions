@@ -18,8 +18,16 @@ spec:
         fsGroup: 2000
       containers:
       - name: flask-app
-        image: wanendeya/flask-app:latest
+        image: example/flask-app:v1.0.0  # Use a specific version instead of latest
         ports:
         - containerPort: 8080
         securityContext:
           allowPrivilegeEscalation: false  # Prevent privilege escalation
+          readOnlyRootFilesystem: true  # Set read-only root filesystem
+        resources:
+          requests:
+            cpu: "100m"  # Set CPU request
+            memory: "128Mi"  # Set memory request
+          limits:
+            cpu: "200m"  # Set CPU limit
+            memory: "256Mi"  # Set memory limit
