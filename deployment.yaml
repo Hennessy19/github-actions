@@ -18,7 +18,7 @@ spec:
         fsGroup: 2000
       containers:
       - name: flask-app
-        image: "${{ secrets.IMAGE_NAME }}"
+        image: example/flask-app:v1.0.0
         ports:
         - containerPort: 8080
         securityContext:
