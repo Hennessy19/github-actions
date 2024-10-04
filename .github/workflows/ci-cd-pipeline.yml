@@ -17,8 +17,8 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker build -t wanendeya/flask-app:latest .
-          docker push wanendeya/flask-app:latest
+          docker build -t "${{ secrets.DOCKER_USERNAME }}"/flask-app:latest .
+          docker push "${{ secrets.DOCKER_USERNAME }}"/flask-app:latest
 
   deploy:
     runs-on: ubuntu-latest
