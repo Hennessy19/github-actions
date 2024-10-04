@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 # Use the latest available version of python3 and pip
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3=3.8.2-0ubuntu2 python3-pip=20.0.2-5ubuntu1 && \
+    apt-get install -y --no-install-recommends python3 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
