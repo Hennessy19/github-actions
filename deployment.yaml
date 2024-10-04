@@ -18,7 +18,7 @@ spec:
         fsGroup: 2000
       containers:
       - name: flask-app
-        image: example/flask-app:latest
+        image: wanendeya/flask-app:latest
         ports:
         - containerPort: 8080
         securityContext:
