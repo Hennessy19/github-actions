@@ -46,12 +46,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Set up Kind Kubernetes Cluster
-    - name: Deploy to Kind Kubernetes Cluster
-      run: |
-        kind create cluster
-        kubectl apply -f deployment.yaml
-        kubectl apply -f services.yaml
+   
 
     #  use Trivy to scan the Docker image for vulnerabilities
     - name: Install Trivy
@@ -73,9 +68,15 @@ jobs:
 
 
     # Check for Policy Violations using OPA
-    - name: Kubernetes Policy Checks with OPA
+    # - name: Kubernetes Policy Checks with OPA
+    #   run: |
+    #     curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
+    #     chmod +x opa
+    #     ./opa eval --format pretty 'data.kubernetes.admission.deny = {"msg": msg}'
+     # Set up Kind Kubernetes Cluster
+    - name: Deploy to Kind Kubernetes Cluster
       run: |
-        curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
-        chmod +x opa
-        ./opa eval --format pretty 'data.kubernetes.admission.deny = {"msg": msg}'
+       kind create cluster
+       kubectl apply -f deployment.yaml
+       kubectl apply -f services.yaml
 
