@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: flask-app
 spec:
-  replicas: 2  # Number of replicas (you can adjust this based on load requirements)
+  replicas: 1
   selector:
     matchLabels:
       app: flask-app
@@ -12,8 +12,14 @@ spec:
       labels:
         app: flask-app
     spec:
+      securityContext:
+        runAsUser: 1000  # Use non-root user for running the container
+        runAsGroup: 3000
+        fsGroup: 2000
       containers:
-      - name: flask-container
-        image: wanendeya/flask-app:latest 
+      - name: flask-app
+        image: example/flask-app:latest
         ports:
-        - containerPort: 8080  # Port that the Flask application is exposing in Dockerfile
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false  # Prevent privilege escalation
