@@ -2,59 +2,28 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main  # Change this if your default branch is different
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+      - name: Build and Push Docker image
+        run: |
+          docker build -t wanendeya/flask-app:latest .
+          docker push wanendeya/flask-app:latest
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}  # Your Docker Hub username
-        password: ${{ secrets.DOCKER_PASSWORD }}  # Your Docker Hub password
-
-    - name: Lint Kubernetes Manifests
-      run: |
-        # Install kube-score
-        curl -s https://raw.githubusercontent.com/zegl/kube-score/master/install.sh | bash
-
-        # Lint your Kubernetes manifests
-        kube-score score deployment.yaml service.yaml
-
-    - name: Validate Kubernetes Manifests
-      run: |
-        # Install kubeval
-        curl -sSL https://raw.githubusercontent.com/instrumenta/kubeval/master/scripts/install.sh | bash
-
-        # Validate your Kubernetes manifests
-        kubeval deployment.yaml service.yaml
-
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: example/flask-app:latest  # Replace with your Docker username
-
-    - name: Set up KinD
-      uses: engineerd/setup-kind@v1
-      with:
-        version: 'latest'
-
-    - name: Deploy to KinD
-      run: |
-        kubectl apply -f deployment.yaml
-        kubectl apply -f service.yaml
+    steps:
+      - name: Deploy to Kind Kubernetes Cluster
+        run: |
+          kind create cluster
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
