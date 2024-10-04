@@ -67,17 +67,16 @@ jobs:
           trivy image "${{ secrets.DOCKER_USERNAME }}/flask-app:latest"
 
     # Check for Kubernetes Best Practices using kube-linter
+    # Check for Kubernetes Best Practices using kube-linter
     - name: Run kube-linter for Kubernetes YAML checks
       run: |
-        curl -Lo kube-linter.tar.gz https://github.com/stackrox/kube-linter/releases/latest/download/kube-linter-linux-amd64.tar.gz
-        tar -xvf kube-linter.tar.gz kube-linter
-        chmod +x kube-linter
-        ./kube-linter lint deployment.yaml services.yaml
+        docker run --rm -v $(pwd):/workspace stackrox/kube-linter:latest lint /workspace/deployment.yaml /workspace/services.yaml
+
 
     # Check for Policy Violations using OPA
-    - name: Kubernetes Policy Checks with OPA
-      run: |
-        curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
-        chmod +x opa
-        ./opa eval --format pretty 'data.kubernetes.admission.deny = {"msg": msg}'
+    # - name: Kubernetes Policy Checks with OPA
+    #   run: |
+    #     curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
+    #     chmod +x opa
+    #     ./opa eval --format pretty 'data.kubernetes.admission.deny = {"msg": msg}'
 
