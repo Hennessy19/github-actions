@@ -53,15 +53,16 @@ jobs:
         kubectl apply -f deployment.yaml
         kubectl apply -f services.yaml
 
-    # Kubernetes Linting and Security Scan with kube-score
-    - name: Validate Kubernetes Manifests
+    #  use Trivy to scan the Docker image for vulnerabilities
+    - name: Install Trivy
       run: |
-        curl -Lo kube-score https://github.com/zegl/kube-score/releases/latest/download/kube-score-linux-amd64
-        chmod +x kube-score
-        file kube-score   # Verify that kube-score is a valid executable
-        ./kube-score score deployment.yaml
-        ./kube-score score services.yaml
+          sudo apt-get update
+          sudo apt-get install -y trivy
 
+    - name: Docker Image Security Scan with Trivy
+      run: |
+          trivy image "${{ secrets.DOCKER_USERNAME }}/flask-app:latest"
+      
     # Check for Kubernetes Best Practices using kube-linter
     - name: Run kube-linter for Kubernetes YAML checks
       run: |
